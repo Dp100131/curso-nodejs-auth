@@ -20,4 +20,4 @@ function setupModels(sequelize) {
   Order.associate(sequelize.models);
 }
 
-module.exports = setupModels;
+module.exports = {setupModels};
