@@ -1,5 +1,3 @@
-const boom = require('@hapi/boom');
-
 const { models } = require('./../libs/sequelize');
 
 class OrderService {
@@ -19,6 +17,21 @@ class OrderService {
 
   async find() {
     return [];
+  }
+
+  async findByUser(userId) {
+    const orders = await models.Order.findAll({
+      where:{
+        '$customer.user.id': userId
+      },
+      include:[
+        {
+          association: 'customer',
+          include: ['user']
+        }
+      ]
+    })
+    return orders;
   }
 
   async findOne(id) {

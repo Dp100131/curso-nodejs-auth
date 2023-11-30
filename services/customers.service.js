@@ -1,5 +1,6 @@
 const boom = require('@hapi/boom');
 const { models } = require('../libs/sequelize');
+const { hashPassword, comparePassword } = require('./../util/security/password.hash');
 
 class CustomerService {
 
@@ -21,9 +22,18 @@ class CustomerService {
   }
 
   async create(data) {
-    const newCustomer = await models.Customer.create(data, {
+    const hash = await hashPassword(data.user.password);
+    const newData = {
+      ...data,
+      user:{
+        ...data.user,
+        password: hash
+      }
+    }
+    const newCustomer = await models.Customer.create(newData, {
       include: ['user']
     });
+    delete newCustomer.dataValues.user.dataValues.password;
     return newCustomer;
   }
 
